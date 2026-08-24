@@ -12,9 +12,15 @@ const projects = [
     title: 'Code Agent',
     label: 'AI AGENT / PYTHON',
     intro: '一个会规划、执行、观察并持续迭代的轻量级代码智能体。',
-    body: '围绕真实工具调用搭建 Agent Loop：Planner 使用 DeepSeek 生成结构化步骤，Executor 调度文件读写与 Shell 工具，运行时根据 Observation 自动推进，直至任务完成。',
-    metrics: ['自主规划', '工具调用', '上下文压缩'],
+    body: '不是一次性生成答案，而是一套可扩展的执行运行时：Planner 强制输出 JSON Action，经 Pydantic 校验后交给工具注册表；每次执行都返回统一 Observation，再写回状态推动下一轮规划。',
+    metrics: ['4 类工具', '最多 10 步', '多任务记忆'],
     stack: ['Python', 'DeepSeek API', 'Pydantic', 'LangChain'],
+    highlights: [
+      ['可靠边界', '未知工具、缺参、超时与权限错误统一收敛为 Observation，不打断循环。'],
+      ['上下文管理', '超过阈值后摘要较早历史，同时保留最近 4 条消息，控制上下文增长。'],
+      ['可扩展设计', 'Planner、Runtime、Executor 与 Tool 解耦，新增工具只需实现抽象接口并注册。']
+    ],
+    note: '当前实现 · CLI 交互 / DeepSeek / read_file / write_file / run_shell / finish',
     href: 'https://github.com/LiuliAnan/code-agent',
     visual: 'agent'
   },
@@ -23,9 +29,15 @@ const projects = [
     title: 'Fullstack Dashboard',
     label: 'FULL STACK / DATA VISUALIZATION',
     intro: '从认证、数据建模到交互式图表的一体化全栈数据产品。',
-    body: '基于 2,000 条公司与关系数据，完成 JWT 鉴权、用户与公司管理、组合筛选、聚合 API，并用 Chart.js 与 D3 构建可缩放层级气泡图。',
-    metrics: ['2,000 条数据', 'RESTful API', 'E2E 测试'],
+    body: '围绕供应链公司数据完成从数据库到交互界面的闭环：后端提供认证、事务 CRUD、聚合与层级查询，前端把同一组组合筛选状态同步到条形图和可缩放气泡层级图。',
+    metrics: ['2K 公司 + 2K 关系', '6 维组合筛选', '12/12 E2E'],
     stack: ['Next.js', 'NestJS', 'PostgreSQL', 'D3', 'Docker'],
+    highlights: [
+      ['层级查询', '过滤命中公司后补全其祖先链，以 matched 标记区分命中节点与结构上下文。'],
+      ['数据体验', 'Chart.js 动态分组与 D3 Circle Packing 共享筛选，支持缩放、Tooltip 和响应式重排。'],
+      ['工程完整性', 'JWT、bcrypt、事务、迁移、Swagger、CSV 自动导入，并覆盖 12 项后端 E2E 测试。']
+    ],
+    note: '当前实现 · 4 个统计指标 / 用户与公司管理 / Bar + Bubble Explorer',
     href: 'https://github.com/LiuliAnan/fullstack-dashboard',
     visual: 'dashboard'
   }
@@ -79,9 +91,9 @@ const projects = [
             <span class="node node-d">REFLECT</span>
           </div>
           <div class="system-feed">
-            <p><span>01</span><b>Context loaded</b><em>12.8k tokens</em></p>
-            <p><span>02</span><b>Tools connected</b><em>ready</em></p>
-            <p><span>03</span><b>Agent loop</b><em class="live">running</em></p>
+            <p><span>01</span><b>Action validated</b><em>Pydantic</em></p>
+            <p><span>02</span><b>Tool registry</b><em>4 tools</em></p>
+            <p><span>03</span><b>History compressor</b><em class="live">active</em></p>
           </div>
           <div class="signal"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
         </div>
@@ -107,28 +119,34 @@ const projects = [
                 <p class="project-body">{project.body}</p>
                 <ul class="metrics">{project.metrics.map((metric) => <li>{metric}</li>)}</ul>
                 <div class="stack">{project.stack.map((item) => <span>{item}</span>)}</div>
+                <div class="project-highlights">
+                  {project.highlights.map(([title, text]) => (
+                    <div><b>{title}</b><p>{text}</p></div>
+                  ))}
+                </div>
+                <p class="project-note">{project.note}</p>
                 <a class="project-link" href={project.href} target="_blank" rel="noreferrer">查看 GitHub 仓库 <span>↗</span></a>
               </div>
               <div class={`project-visual ${project.visual}`} aria-hidden="true">
                 {project.visual === 'agent' ? (
                   <div class="agent-ui">
                     <div class="window-bar"><i></i><i></i><i></i><span>agent_runtime.py</span></div>
-                    <div class="flow-row"><b>01</b><span><small>PLANNER</small>理解目标并拆解任务</span><em>✓</em></div>
+                    <div class="flow-row"><b>01</b><span><small>PLANNER</small>JSON Action + Schema 校验</span><em>✓</em></div>
                     <div class="flow-line"></div>
-                    <div class="flow-row active"><b>02</b><span><small>EXECUTOR</small>选择工具并执行动作</span><em>•••</em></div>
+                    <div class="flow-row active"><b>02</b><span><small>EXECUTOR</small>Registry 分发对应 Tool</span><em>•••</em></div>
                     <div class="flow-line"></div>
-                    <div class="flow-row"><b>03</b><span><small>OBSERVATION</small>读取结果，进入下一轮</span><em>↻</em></div>
+                    <div class="flow-row"><b>03</b><span><small>OBSERVATION</small>结果写回 AgentState</span><em>↻</em></div>
                     <div class="code-line"><span>$</span> agent.run(<b>"build the feature"</b>)</div>
                   </div>
                 ) : (
                   <div class="dashboard-ui">
                     <div class="dash-side"><strong>LMY</strong><i></i><i></i><i></i><i></i></div>
                     <div class="dash-main">
-                      <div class="dash-top"><b>Company Insights</b><span>⌕ &nbsp; ●</span></div>
+                      <div class="dash-top"><b>Supply Chain Explorer</b><span>⌕ &nbsp; ●</span></div>
                       <div class="stat-grid"><span><small>COMPANIES</small><b>2,000</b></span><span><small>REVENUE</small><b>$182.8M</b></span><span><small>COUNTRIES</small><b>08</b></span></div>
                       <div class="chart-grid">
                         <div class="bars"><i style="--h:45%"></i><i style="--h:72%"></i><i style="--h:58%"></i><i style="--h:90%"></i><i style="--h:66%"></i><i style="--h:82%"></i></div>
-                        <div class="bubbles"><i></i><i></i><i></i><i></i><i></i></div>
+                        <div class="bubbles"><i></i><i></i><i></i><i></i><i></i><small>ancestor context<br />preserved</small></div>
                       </div>
                     </div>
                   </div>
