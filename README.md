@@ -25,6 +25,4 @@ pnpm dev
 
 - 页面内容：`src/pages/index.astro`
 - 全局样式：`src/styles/global.css`
-- 头像：`public/portrait.jpg`
-- 简历：`public/resume.pdf`
 - 自动部署：`.github/workflows/deploy.yml`

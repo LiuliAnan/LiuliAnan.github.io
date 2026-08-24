@@ -49,7 +49,7 @@ const projects = [
         <a href="#about">关于</a>
         <a href="#contact">联系</a>
       </nav>
-      <a class="nav-cta" href="/resume.pdf" target="_blank">查看简历 <span>↗</span></a>
+      <a class="nav-cta" href="https://github.com/LiuliAnan" target="_blank" rel="noreferrer">GitHub <span>↗</span></a>
     </header>
 
     <main id="top">
@@ -63,20 +63,27 @@ const projects = [
             <a class="button ghost" href="mailto:liuliananlmy@163.com">联系我 <span>↗</span></a>
           </div>
         </div>
-        <div class="hero-card" aria-label="个人简介卡片">
-          <div class="portrait-wrap">
-            <img src="/portrait.jpg" alt="刘洺远" />
-            <span class="status-dot"></span>
+        <div class="hero-system" aria-label="AI Agent 系统运行状态">
+          <div class="system-head">
+            <span><i></i> AGENT SYSTEM / ONLINE</span>
+            <b>LMY.2026</b>
           </div>
-          <div class="identity">
-            <strong>刘洺远</strong><span>LIU MINGYUAN</span>
+          <div class="orbit-stage">
+            <div class="orbit orbit-one"><i></i></div>
+            <div class="orbit orbit-two"><i></i></div>
+            <div class="orbit orbit-three"><i></i></div>
+            <div class="core"><span>AI</span><small>APPLICATION<br />ENGINEER</small></div>
+            <span class="node node-a">PLAN</span>
+            <span class="node node-b">ACT</span>
+            <span class="node node-c">OBSERVE</span>
+            <span class="node node-d">REFLECT</span>
           </div>
-          <dl>
-            <div><dt>LOCATION</dt><dd>Sydney / China</dd></div>
-            <div><dt>EDUCATION</dt><dd>UNSW · Database Systems</dd></div>
-            <div><dt>FOCUS</dt><dd>AI Agent · Full Stack</dd></div>
-          </dl>
-          <div class="terminal-line"><span>›</span> Building systems that think <i>_</i></div>
+          <div class="system-feed">
+            <p><span>01</span><b>Context loaded</b><em>12.8k tokens</em></p>
+            <p><span>02</span><b>Tools connected</b><em>ready</em></p>
+            <p><span>03</span><b>Agent loop</b><em class="live">running</em></p>
+          </div>
+          <div class="signal"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
         </div>
       </section>
 
@@ -164,5 +171,19 @@ const projects = [
     </main>
 
     <footer class="site-footer"><span>© 2026 刘洺远</span><span>DESIGNED & BUILT WITH CARE</span><a href="#top">BACK TO TOP ↑</a></footer>
+    <script>
+      const revealItems = document.querySelectorAll('.project-card, .about-main, .about-side, .proof, .contact');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('is-visible'));
+      }, { threshold: 0.12 });
+      revealItems.forEach((item) => observer.observe(item));
+
+      const system = document.querySelector('.hero-system');
+      system?.addEventListener('pointermove', (event) => {
+        const rect = system.getBoundingClientRect();
+        system.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+        system.style.setProperty('--my', `${event.clientY - rect.top}px`);
+      });
+    </script>
   </body>
 </html>
