@@ -2,7 +2,7 @@
 import '../styles/global.css';
 
 const skills = [
-  'Agent Loop', 'Function Calling', 'RAG', 'Python', 'FastAPI',
+  'Agent Loop', 'Python → C++17', 'Golden Run', 'Python', 'FastAPI',
   'C++', 'Next.js', 'NestJS', 'PostgreSQL', 'Docker'
 ];
 
@@ -11,16 +11,16 @@ const projects = [
     number: '01',
     title: 'Code Agent',
     label: 'AI AGENT / PYTHON',
-    intro: '一个会规划、执行、观察并持续迭代的轻量级代码智能体。',
-    body: '不是一次性生成答案，而是一套可扩展的执行运行时：Planner 强制输出 JSON Action，经 Pydantic 校验后交给工具注册表；每次执行都返回统一 Observation，再写回状态推动下一轮规划。',
-    metrics: ['4 类工具', '最多 10 步', '多任务记忆'],
-    stack: ['Python', 'DeepSeek API', 'Pydantic', 'LangChain'],
+    intro: '以运行时事实为验证基准的 Python → C++17 自动迁移 Agent。',
+    body: '从 AST 调用图出发，自动完成插桩、黄金运行、函数分类、逐函数转换、项目集成与报告；LLM 负责需要推理的分类和代码生成，测试预言、编译、依赖检查与输出比对保持确定性。',
+    metrics: ['7 阶段流水线', '15 个工具', '12/12 基线通过'],
+    stack: ['Python', 'C++17', 'DeepSeek', 'AST', 'Pydantic', 'CMake'],
     highlights: [
-      ['可靠边界', '未知工具、缺参、超时与权限错误统一收敛为 Observation，不打断循环。'],
-      ['上下文管理', '超过阈值后摘要较早历史，同时保留最近 4 条消息，控制上下文增长。'],
-      ['可扩展设计', 'Planner、Runtime、Executor 与 Tool 解耦，新增工具只需实现抽象接口并注册。']
+      ['可信验证', 'golden-run 捕获真实输入输出类型和值，确定性生成断言并禁止 repair 改写期望值。'],
+      ['自修复闭环', '逐函数执行生成 → 编译 → 数值测试 → LLM 审查；失败进入有界 repair，服务波动单独重试。'],
+      ['项目级集成', '补全依赖闭包后用 CMake 或 g++ 构建运行，并对 Python/C++ stdout 做归一化比对。']
     ],
-    note: '当前实现 · CLI 交互 / DeepSeek / read_file / write_file / run_shell / finish',
+    note: '验证结果 · 基线 12/12 · 数独 4/4 · py2many 13/13 · 购物车 7/7 · 集成全 True',
     href: 'https://github.com/LiuliAnan/code-agent',
     visual: 'agent'
   },
@@ -85,15 +85,15 @@ const projects = [
             <div class="orbit orbit-two"><i></i></div>
             <div class="orbit orbit-three"><i></i></div>
             <div class="core"><span>AI</span><small>APPLICATION<br />ENGINEER</small></div>
-            <span class="node node-a">PLAN</span>
-            <span class="node node-b">ACT</span>
-            <span class="node node-c">OBSERVE</span>
-            <span class="node node-d">REFLECT</span>
+            <span class="node node-a">PARSE</span>
+            <span class="node node-b">TRACE</span>
+            <span class="node node-c">CONVERT</span>
+            <span class="node node-d">VERIFY</span>
           </div>
           <div class="system-feed">
-            <p><span>01</span><b>Action validated</b><em>Pydantic</em></p>
-            <p><span>02</span><b>Tool registry</b><em>4 tools</em></p>
-            <p><span>03</span><b>History compressor</b><em class="live">active</em></p>
+            <p><span>01</span><b>Migration pipeline</b><em>7 stages</em></p>
+            <p><span>02</span><b>Tool registry</b><em>15 tools</em></p>
+            <p><span>03</span><b>Golden-run oracle</b><em class="live">verified</em></p>
           </div>
           <div class="signal"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
         </div>
@@ -131,12 +131,15 @@ const projects = [
                 {project.visual === 'agent' ? (
                   <div class="agent-ui">
                     <div class="window-bar"><i></i><i></i><i></i><span>agent_runtime.py</span></div>
-                    <div class="flow-row"><b>01</b><span><small>PLANNER</small>JSON Action + Schema 校验</span><em>✓</em></div>
+                    <div class="flow-row"><b>01</b><span><small>ANALYZE</small>AST 解析 + 插桩 + 调用图</span><em>✓</em></div>
                     <div class="flow-line"></div>
-                    <div class="flow-row active"><b>02</b><span><small>EXECUTOR</small>Registry 分发对应 Tool</span><em>•••</em></div>
+                    <div class="flow-row"><b>02</b><span><small>GOLDEN RUN</small>捕获真实类型与输入输出</span><em>✓</em></div>
                     <div class="flow-line"></div>
-                    <div class="flow-row"><b>03</b><span><small>OBSERVATION</small>结果写回 AgentState</span><em>↻</em></div>
-                    <div class="code-line"><span>$</span> agent.run(<b>"build the feature"</b>)</div>
+                    <div class="flow-row active"><b>03</b><span><small>CONVERT LOOP</small>生成 → 编译 → 测试 → 修复</span><em>•••</em></div>
+                    <div class="flow-line"></div>
+                    <div class="flow-row"><b>04</b><span><small>INTEGRATE</small>CMake 构建 + stdout 比对</span><em>✓</em></div>
+                    <div class="pipeline-strip"><span>PARSE</span><i></i><span>TRACE</span><i></i><span>CLASSIFY</span><i></i><span>CONVERT</span><i></i><span>REPORT</span></div>
+                    <div class="code-line"><span>$</span> agent.convert(<b>"python_project"</b>, target=<b>"cpp17"</b>)</div>
                   </div>
                 ) : (
                   <div class="dashboard-ui">
